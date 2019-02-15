@@ -25,7 +25,7 @@ shinyUI(fluidPage(
                   accept = c(".gff3")),
         
         # Add horizontal line to split from upload section
-        tags$hr(),
+        hr(),
         h4("Search inputs"),
         
         # Gene input
@@ -40,7 +40,7 @@ shinyUI(fluidPage(
         numericInput("position", label = h5("Search positons"), value=0),
         
         # Add horizontal line to split from search section
-        tags$hr(),
+        hr(),
         h4("Plot Options"),
         
         # Color palette choices
@@ -54,16 +54,12 @@ shinyUI(fluidPage(
                    min = 1,
                    max = 50,
                    value = 30)
-        
-
     ),
     
     # Data visualizations here!
     mainPanel(
        # The main plot contains a distribution of aligned reads
-       plotOutput("distPlot")
-       
-       # The secondary plot contains the transcript representation
+       plotOutput("read_gviz_plot")
     )
   )
 ))
