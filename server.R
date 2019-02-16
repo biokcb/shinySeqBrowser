@@ -65,8 +65,8 @@ shinyServer(function(input, output) {
   output$read_gviz_plot <- renderPlot({
       bam_process()
       Gviz::plotTracks(list(axisTrack, annot_track(), bam_track()), type='hist',
-                       from = 9989752, to = 9994025)
                        chromosome = input$chrom,
+                       from = input$start, to = input$end)
   })
   
   # TODO add ability to export plot 

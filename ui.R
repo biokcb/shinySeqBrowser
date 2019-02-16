@@ -37,8 +37,8 @@ shinyUI(fluidPage(
         uiOutput("chromosomes"),
         
         # position input
-        numericInput("position", label = h5("Search positons"), value=0),
-        
+        numericInput("start", label = h5("Enter start position"), value=0),
+        numericInput("end", label = h5("Enter end position"), value=0),
         # Add horizontal line to split from search section
         hr(),
         h4("Plot Options"),
