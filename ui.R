@@ -34,9 +34,7 @@ shinyUI(fluidPage(
         textInput("gene", label = h5("Search transcripts"), placeholder = "Enter gene name..." ),
         
         # Chromosome input
-        selectInput("chrom", label = h5("Select chromosome"), 
-                    choices = list("Choice 1" = 1, "Choice 2" = 2, "Choice 3" = 3), 
-                    selected = 1),
+        uiOutput("chromosomes"),
         
         # position input
         numericInput("position", label = h5("Search positons"), value=0),
