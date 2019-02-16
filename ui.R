@@ -19,6 +19,8 @@ shinyUI(fluidPage(
                   multiple = FALSE,
                   accept = c(".bam")),
         
+        checkboxInput("ispaired", label="Paired-end data", value=FALSE),
+        
         # Upload the GFF3 file
         fileInput("gff_file", "Choose a GFF3 File",
                   multiple = FALSE,

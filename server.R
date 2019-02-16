@@ -8,40 +8,45 @@ library(Rsamtools)
 library(Gviz)
 
 options(ucscChromosomeNames=FALSE)
+options(shiny.maxRequestSize=500*1024^2)
 
-setwd('~/Documents/GitHub/shinySeqBrowser/')
-# Implement an example case in wild type C. elegans
-cel_n2_bam <- "./data/cel_example.bam"
-indexBam("./data/cel_example.bam")
-cel_ws230_gff <- "./data/cel_ws230_example.gff3"
+# Always will have the generic axis, no need to re-render.
+axisTrack <- GenomeAxisTrack()
 
-cel_ws230_db <- GenomicFeatures::makeTxDbFromGFF(file = cel_ws230_gff, format = "gff3")
-
-cel_gtrack <- Gviz::GeneRegionTrack(range=cel_ws230_db, chromosome = "CHROMOSOME_I", 
-                      start = 9989752, end = 9994025, stacking = "dense",
-                      geneSymbols = TRUE)
-cel_altrack <- Gviz::AlignmentsTrack(range = cel_n2_bam, chromosome = "CHROMOSOME_I", 
-                                     start = 9989752, end = 9994025, stacking = "dense",
-                                     isPaired = TRUE)
-  
 shinyServer(function(input, output) {
-  
-  # Get inputs
-  bam_upload <- reactive({
-    bam1 <- scanBam(input$bam_file1)
-    return(bam1)
+  # Get input alignment file to plot (bam format)
+  # Needs to be indexed to run
+  bam_process <- reactive({
+    req(input$bam_file1)
+    indexBam(input$bam_file1$datapath)
   })
   
-  gff_upload <- reactive({
-    gff <- read.delim(input$gff_file)
-    return(gff)
+  # Create data track with bam alignments
+  bam_track <- reactive({
+    req(input$bam_file1)
+    Gviz::DataTrack(range = input$bam_file1$datapath, stream=TRUE, legend=TRUE, 
+                  isPaired = input$ispaired)
   })
   
+  # Get input annotations (gtf/gff format)
+  txDb <- reactive({
+    req(input$gff_file)
+    GenomicFeatures::makeTxDbFromGFF(file = input$gff_file$datapath, format = "auto")
+  })
+  
+  # Create annotation track from gff
+  annot_track <- reactive({
+    Gviz::GeneRegionTrack(txDb(), collapseTranscripts = "meta")
+  }) 
+  
+  })
+  
+  # Update the main plot window
   output$read_gviz_plot <- renderPlot({
-    
-      Gviz::plotTracks(c(cel_altrack, cel_gtrack), 
-                       from = 9989752, to = 9994025, stacking = "dense")
-    
+      bam_process()
+      Gviz::plotTracks(list(axisTrack, annot_track(), bam_track()), type='hist',
+                       chromosome = "CHROMOSOME_I",
+                       from = 9989752, to = 9994025)
   })
   
 })
