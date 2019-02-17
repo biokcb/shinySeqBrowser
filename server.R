@@ -6,6 +6,7 @@ library(GenomicRanges)
 library(GenomicFeatures)
 library(Rsamtools)
 library(Gviz)
+library(Cairo)
 
 options(ucscChromosomeNames=FALSE)
 options(shiny.maxRequestSize=500*1024^2)
@@ -60,6 +61,19 @@ shinyServer(function(input, output) {
       Gviz::plotTracks(list(GenomeAxisTrack(), annot_track(), bam_track()), type='hist',
   })
   
-  # TODO add ability to export plot 
+  # Download the plot as a PDF
+  output$save <- downloadHandler(
+    filename = function(){
+      paste(Sys.Date(), "_read_plot", ".pdf", sep="")
+    },
+    content = function(filename){
+      cairo_pdf(filename)
+      bam_process()
+      Gviz::plotTracks(list(GenomeAxisTrack(), annot_track(), bam_track()), type='hist',
+                       chromosome = input$chrom, from = input$start, to = input$end,
+                       background.panel = input$bgcol, background.title = input$pancol)
+      dev.off()
+    }
+  )
   
 })
