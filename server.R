@@ -22,7 +22,7 @@ shinyServer(function(input, output) {
   bam_track <- reactive({
     req(input$bam_file1)
     Gviz::DataTrack(range = input$bam_file1$datapath, stream=TRUE, legend=TRUE, 
-                  isPaired = input$ispaired)
+                  isPaired =  input$ispaired, fill = input$readcol, col = input$readcol)
   })
   
   # Get input annotations (gtf/gff format)
@@ -33,7 +33,7 @@ shinyServer(function(input, output) {
   
   # Create annotation track from gff
   annot_track <- reactive({
-    Gviz::GeneRegionTrack(txDb(), collapseTranscripts = "meta")
+    Gviz::GeneRegionTrack(txDb(), collapseTranscripts = 'meta', fill = input$annotcol)
   }) 
   
   # Get chromosome options from gff
@@ -53,9 +53,10 @@ shinyServer(function(input, output) {
   # Update the main plot window
   output$read_gviz_plot <- renderPlot({
       bam_process()
-                       chromosome = input$chrom,
-                       from = input$start, to = input$end)
       Gviz::plotTracks(list(GenomeAxisTrack(), annot_track(), bam_track()), type='hist',
+                       chromosome = input$chrom, from = input$start, to = input$end,
+                       background.panel = input$bgcol, background.title = input$pancol,
+                       window = -1, col.histogram = input$readcol)
   })
   
   # Download the plot as a PDF
@@ -68,7 +69,8 @@ shinyServer(function(input, output) {
       bam_process()
       Gviz::plotTracks(list(GenomeAxisTrack(), annot_track(), bam_track()), type='hist',
                        chromosome = input$chrom, from = input$start, to = input$end,
-                       background.panel = input$bgcol, background.title = input$pancol)
+                       background.panel = input$bgcol, background.title = input$pancol,
+                       window = -1)
       dev.off()
     }
   )

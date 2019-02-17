@@ -4,6 +4,7 @@
 library(shiny)
 library(shinythemes)
 library(shinycssloaders)
+library(colourpicker)
 
 shinyUI(fluidPage(
   # Basic app elements
@@ -44,8 +45,14 @@ shinyUI(fluidPage(
     ),
     # Data visualizations here!
     mainPanel(
-       # The main plot contains a distribution of aligned reads
-       plotOutput("read_gviz_plot")
+      # The main plot contains a distribution of aligned reads
+      withSpinner(plotOutput("read_gviz_plot")),
+      h4("Plot Options"),
+        # Color palette choices
+        colourInput("bgcol", "Select background color", "white"),
+        colourInput("pancol", "Select panel color", "#51B9CF"),
+        colourInput("annotcol", "Select gene track color", "#FDC010"),
+        colourInput("readcol", "Select read color", "#333333")
     )
   )
 ))
