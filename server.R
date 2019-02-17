@@ -10,12 +10,8 @@ library(Gviz)
 options(ucscChromosomeNames=FALSE)
 options(shiny.maxRequestSize=500*1024^2)
 
-# Always will have the generic axis, no need to re-render.
-axisTrack <- GenomeAxisTrack()
-
 shinyServer(function(input, output) {
-  # Get input alignment file to plot (bam format)
-  # Needs to be indexed to run
+  # Get input alignment file & index
   bam_process <- reactive({
     req(input$bam_file1)
     indexBam(input$bam_file1$datapath)
@@ -44,12 +40,7 @@ shinyServer(function(input, output) {
   
   # Get chromosome options from gff
   chroms <- reactive({
-    req(input$gff_file)
     seqlevels(txDb())
-  })
-  
-    # TODO add parsing the txDb for a list of features, ranges
-    # TODO select a random one within range
   })
   
   # Update the chromosome select widget with chromosomes
@@ -64,9 +55,9 @@ shinyServer(function(input, output) {
   # Update the main plot window
   output$read_gviz_plot <- renderPlot({
       bam_process()
-      Gviz::plotTracks(list(axisTrack, annot_track(), bam_track()), type='hist',
                        chromosome = input$chrom,
                        from = input$start, to = input$end)
+      Gviz::plotTracks(list(GenomeAxisTrack(), annot_track(), bam_track()), type='hist',
   })
   
   # TODO add ability to export plot 

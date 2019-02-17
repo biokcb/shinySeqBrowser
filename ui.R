@@ -5,10 +5,9 @@ library(shiny)
 library(shinythemes)
 
 shinyUI(fluidPage(
-  
   # Basic app elements
   theme = shinytheme("slate"),
-  titlePanel("Browse RNA-seq reads aligned across transcripts"),
+  titlePanel("shinySeqBrowser: Browse RNA-seq reads aligned across transcripts"),
   
   # User-modifiable options
   sidebarLayout(
