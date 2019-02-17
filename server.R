@@ -33,7 +33,7 @@ shinyServer(function(input, output) {
   
   # Create annotation track from gff
   annot_track <- reactive({
-    Gviz::GeneRegionTrack(txDb(), collapseTranscripts = 'meta', fill = input$annotcol)
+    Gviz::GeneRegionTrack(txDb(), collapseTranscripts = 'meta', fill = input$annotcol, showId=TRUE)
   }) 
   
   # Get chromosome options from gff
@@ -67,7 +67,7 @@ shinyServer(function(input, output) {
     content = function(filename){
       cairo_pdf(filename)
       bam_process()
-      Gviz::plotTracks(list(GenomeAxisTrack(), annot_track(), bam_track()), type='hist',
+      Gviz::plotTracks(list(GenomeAxisTrack(), bam_track(), annot_track()), type='hist',
                        chromosome = input$chrom, from = input$start, to = input$end,
                        background.panel = input$bgcol, background.title = input$pancol,
                        window = -1)
