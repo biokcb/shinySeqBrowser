@@ -11,7 +11,7 @@ library(Cairo)
 options(ucscChromosomeNames=FALSE)
 options(shiny.maxRequestSize=500*1024^2)
 
-shinyServer(function(input, output) {
+shinyServer(function(input, output, session) {
   # Get input alignment file & index
   bam_process <- reactive({
     req(input$bam_file1)
@@ -41,15 +41,39 @@ shinyServer(function(input, output) {
     seqlevels(txDb())
   })
   
-  # Update the chromosome select widget with chromosomes
-  output$chromosomes <- renderUI({
-    selectInput("chrom", label = h5("Select chromosome"),
-                choices = chroms())
+  # Create a list of genes from txDb
+  gene_list <- reactive({
+    req(input$gff_file)
+    names(genes(txDb()))
   })
   
-  # TODO Update the search transcript widget with searchable list
-  # TODO add Typeahead text input from shinysky
+  # Get the chromosome of selected gene
+  gene_chrom <- reactive({
+    seqnames(genes(txDb())[gene_list()==input$gene])
+  })
   
+  # Update the start & end positions based on gene selection
+  observe({
+    gene_pos <- ranges(genes(txDb())[gene_list()==input$gene])
+    gene_start <- start(gene_pos) - 500
+    gene_end <- end(gene_pos) + 500
+    updateNumericInput(session, "start", value=gene_start)
+    updateNumericInput(session, "end", value=gene_end)
+  })
+  
+  # Update the chromosome select widget with chromosome options + selected gene chromosome
+  output$chromosomes <- renderUI({
+    selectInput("chrom", label = h5("Select chromosome"),
+                choices = chroms(), selected = gene_chrom())
+  })
+
+  # Generate the gene search bar from list
+  output$gene_search <- renderUI({
+    selectizeInput("gene", label = h5("Search transcripts"), selected = NULL, multiple=FALSE, 
+                   options=list(placeholder = "Enter gene name...", maxItems = 1, maxOptions = 10),
+                   choices = gene_list())
+  })
+
   # Update the main plot window
   output$read_gviz_plot <- renderPlot({
       bam_process()

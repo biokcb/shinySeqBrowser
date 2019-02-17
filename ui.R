@@ -31,8 +31,8 @@ shinyUI(fluidPage(
       h4("Search parameters"),
         
       # Gene input
-      textInput("gene", label = h5("Search transcripts"), placeholder = "Enter gene name..." ),
-        
+      uiOutput("gene_search"),
+      
       # Chromosome input
       uiOutput("chromosomes"),
         
