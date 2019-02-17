@@ -17,10 +17,7 @@ shinyServer(function(input, output) {
     req(input$bam_file1)
     indexBam(input$bam_file1$datapath)
   })
-  
-  # TODO add reactive for ispaired checkbox, I don't think it actually updates when 
-  # checked off?
-  
+
   # Create data track with bam alignments
   bam_track <- reactive({
     req(input$bam_file1)

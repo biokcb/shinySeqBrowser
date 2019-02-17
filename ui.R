@@ -37,8 +37,8 @@ shinyUI(fluidPage(
       uiOutput("chromosomes"),
         
       # position input
-      numericInput("start", label = h5("Enter start position"), value=0),
-      numericInput("end", label = h5("Enter end position"), value=0),
+      numericInput("start", label = h5("Enter start position"), value=1),
+      numericInput("end", label = h5("Enter end position"), value=100000),
       hr(),
       downloadButton("save", "Download plot as PDF")
     ),
