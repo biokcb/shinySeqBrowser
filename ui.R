@@ -3,6 +3,7 @@
 
 library(shiny)
 library(shinythemes)
+library(shinycssloaders)
 
 shinyUI(fluidPage(
   # Basic app elements
