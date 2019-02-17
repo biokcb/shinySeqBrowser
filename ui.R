@@ -2,13 +2,11 @@
 # or positions of interest. 
 
 library(shiny)
-library(shinythemes)
 library(shinycssloaders)
 library(colourpicker)
 
 shinyUI(fluidPage(
   # Basic app elements
-  theme = shinytheme("slate"),
   titlePanel("shinySeqBrowser: Browse RNA-seq reads aligned across transcripts"),
   
   # User-modifiable options
