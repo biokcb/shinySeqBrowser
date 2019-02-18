@@ -94,7 +94,7 @@ shinyServer(function(input, output, session) {
       Gviz::plotTracks(list(GenomeAxisTrack(), bam_track(), annot_track()), type='hist',
                        chromosome = input$chrom, from = input$start, to = input$end,
                        background.panel = input$bgcol, background.title = input$pancol,
-                       window = -1)
+                       window = -1, col.histogram = input$readcol)
       dev.off()
     }
   )
