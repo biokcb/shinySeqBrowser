@@ -77,6 +77,7 @@ shinyServer(function(input, output, session) {
 
   # Update the main plot window
   output$read_gviz_plot <- renderPlot({
+      req(input$gene)
       Gviz::plotTracks(list(GenomeAxisTrack(), annot_track(), bam_track()), type='hist',
                        chromosome = input$chrom, from = input$start, to = input$end,
                        background.panel = input$bgcol, background.title = input$pancol,
