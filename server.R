@@ -21,6 +21,7 @@ shinyServer(function(input, output, session) {
   # Create data track with bam alignments
   bam_track <- reactive({
     req(input$bam_file1)
+    bam_process()
     Gviz::DataTrack(range = input$bam_file1$datapath, stream=TRUE, legend=TRUE, 
                   isPaired =  input$ispaired, fill = input$readcol, col = input$readcol)
   })
@@ -76,7 +77,6 @@ shinyServer(function(input, output, session) {
 
   # Update the main plot window
   output$read_gviz_plot <- renderPlot({
-      bam_process()
       Gviz::plotTracks(list(GenomeAxisTrack(), annot_track(), bam_track()), type='hist',
                        chromosome = input$chrom, from = input$start, to = input$end,
                        background.panel = input$bgcol, background.title = input$pancol,
@@ -90,7 +90,6 @@ shinyServer(function(input, output, session) {
     },
     content = function(filename){
       cairo_pdf(filename)
-      bam_process()
       Gviz::plotTracks(list(GenomeAxisTrack(), bam_track(), annot_track()), type='hist',
                        chromosome = input$chrom, from = input$start, to = input$end,
                        background.panel = input$bgcol, background.title = input$pancol,
